@@ -108,7 +108,7 @@ export function registerSettings() {
         content: settingsContent
       })
     },
-    icon="shuffle"
+    "shuffle"
   ).register();
 }
 
