@@ -101,14 +101,14 @@ export function registerSettings() {
 
   new Spicetify.Menu.Item(
     "bShuffle Settings",
-    true,
+    false,
     () => {
       Spicetify.PopupModal.display({
         title: "bShuffle Settings",
         content: settingsContent
       })
     },
-    "shuffle"
+    icon="shuffle"
   ).register();
 }
 
