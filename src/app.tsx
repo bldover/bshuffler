@@ -9,8 +9,10 @@ import { registerContextMenu, registerSettings } from "./shuffleConfig";
 async function initShuffler() {
 
   // wait a couple seconds for the Spicetify object to finish being initialized
-  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-  await sleep(2000);
+  if (!(Spicetify.React && Spicetify.URI)) {
+    setTimeout(initShuffler, 300);
+		return;
+	}
 
   registerSettings();
   registerContextMenu();

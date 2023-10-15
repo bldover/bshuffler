@@ -8,7 +8,7 @@ import ContextTrack = Spicetify.ContextTrack;
 // https://github.com/spicetify/spicetify-cli/blob/master/Extensions/shuffle+.js
 function shuffleTracks(tracks: UriWithArtist[], uriType: string) {
 
-  let { Type } = URI;
+  const { Type } = URI;
 
   let currIndex: number = tracks.length, randomIndex;
 
@@ -100,7 +100,13 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 // adds tracks to the actual queue
 async function updateQueue(tracks: ContextTrack[]) {
+  const delay = getOpDelayMs();
+  await sleep(delay);
   await Spicetify.Platform.PlayerAPI.clearQueue();
+
+  await sleep(delay);
+  const uris = tracks.map(track => track.uri);
+  uris.push("spotify:delimiter");
   await Spicetify.addToQueue(tracks);
 }
 
@@ -109,30 +115,10 @@ async function updateQueue(tracks: ContextTrack[]) {
 async function updateUpNext(tracks: ContextTrack[], uriRaw: string) {
   const delay = getOpDelayMs();
   await sleep(delay);
-  await Spicetify.Platform.PlayerAPI.clearQueue();
 
-  await sleep(delay);
-  const uris = tracks.map(track => track.uri);
-  uris.push("spotify:delimiter");
-  await Spicetify.CosmosAsync.put("sp://player/v2/main/queue", {
-		queue_revision: Spicetify.Queue?.queueRevision,
-		next_tracks: uris.map(uri => ({
-			uri,
-			provider: "context",
-			metadata: {
-				is_queued: "false"
-			}
-		})),
-		prev_tracks: Spicetify.Queue?.prevTracks
-	});
-
-  await sleep(delay);
-  await Spicetify.CosmosAsync.post("sp://player/v2/main/update", {
-    context: {
-      uri: uriRaw,
-      url: "context://" + uriRaw
-    }
-  });
+  Spicetify.Platform.PlayerAPT.getState().shuffle = true;
+	const { sessionId } = Spicetify.Platform.PlayerAPI.getState();
+	Spicetify.Platform.PlayerAPI.updateContext(sessionId, { uri: uriRaw, url: "context://" + uriRaw });
 }
 
 async function shuffleAndPlay(uriRaw: string) {
@@ -172,6 +158,7 @@ async function shuffleAndPlay(uriRaw: string) {
 
   await Spicetify.Player.playUri(firstTrack.uri);
   Spicetify.showNotification(`bShuffled ${songsShuffled.length + 1} songs`);
+  await updateQueue(songsShuffled)
   await updateUpNext(songsShuffled, uriRaw);
 }
 

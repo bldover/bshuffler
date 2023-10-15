@@ -1,7 +1,4 @@
 import shuffleAndPlay from "./shuffle";
-import React = Spicetify.React;
-import URI = Spicetify.URI;
-import { useState } from "react";
 
 // if a higher percent of the playlist than this is the same artist, don't do separation
 const artistSeparatorThreshold = 1;
@@ -35,6 +32,8 @@ export const getArtistSeparatorThld = () => artistSeparatorThreshold;
 
 const ConfigWindow = (config: Config) => {
 
+  const { React } = Spicetify;
+
   let tempValue = config.data.value;
 
   function handleChange (e: React.FormEvent<HTMLInputElement>) {
@@ -61,7 +60,7 @@ const ConfigWindow = (config: Config) => {
 }
 
 export function registerContextMenu() {
-
+  const { URI } = Spicetify;
   let { Type } = URI;
 
   let shuffleableTypes = [
@@ -92,6 +91,8 @@ export function registerSettings() {
 
   initSettings(minTrackConfig);
   initSettings(opDelayConfig);
+
+  const { React } = Spicetify;
 
   let settingsContent =
     <>
