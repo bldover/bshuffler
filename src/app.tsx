@@ -5,6 +5,7 @@ import { registerContextMenu, registerSettings } from "./shuffleConfig";
 // -- probably not needed, seems fast enough
 // - fix context to be better (use shuffle? where does this go???)
 // - avoid clearing any existing queue???
+// - error handling for Spotify interactions to avoid the inconsistent fixed delay
 
 async function initShuffler() {
 

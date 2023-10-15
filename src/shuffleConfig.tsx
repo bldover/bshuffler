@@ -1,4 +1,5 @@
 import shuffleAndPlay from "./shuffle";
+import URI = Spicetify.URI;
 
 // if a higher percent of the playlist than this is the same artist, don't do separation
 const artistSeparatorThreshold = 1;
@@ -32,6 +33,7 @@ export const getArtistSeparatorThld = () => artistSeparatorThreshold;
 
 const ConfigWindow = (config: Config) => {
 
+  // have to dynamically retrieve this because the React field is not set when the module loads
   const { React } = Spicetify;
 
   let tempValue = config.data.value;
@@ -60,7 +62,6 @@ const ConfigWindow = (config: Config) => {
 }
 
 export function registerContextMenu() {
-  const { URI } = Spicetify;
   let { Type } = URI;
 
   let shuffleableTypes = [
@@ -92,13 +93,14 @@ export function registerSettings() {
   initSettings(minTrackConfig);
   initSettings(opDelayConfig);
 
+  // have to dynamically retrieve this because the React field is not set when the module loads
   const { React } = Spicetify;
 
   let settingsContent =
     <>
-  <ConfigWindow displayText="Min Song Length (sec)" data={minTrackConfig} />
-  <ConfigWindow displayText="Operation Delay (ms)" data={opDelayConfig} />
-  </>
+      <ConfigWindow displayText="Min Song Length (sec)" data={minTrackConfig} />
+      <ConfigWindow displayText="Operation Delay (ms)" data={opDelayConfig} />
+    </>
 
   new Spicetify.Menu.Item(
     "bShuffle Settings",
